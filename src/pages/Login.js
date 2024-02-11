@@ -6,6 +6,12 @@ import { setLoggedUser } from "../app/slice";
 import axios from "axios";
 
 const Login = () => {
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userNotExist, setUserNotExist] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -19,6 +25,23 @@ const Login = () => {
     To get admin credentials
     Use url-  /api/admin?email=${email} with GET method 
     */
+    axios.get(`/api/${isAdmin ? 'admin' : 'applicants'}?email=${email}`)
+      .then(function (response) {
+        console.log(response);
+        if (response.data.length === 0) {
+          setUserNotExist(true)
+          return;
+        }
+        if (password === response.data[0].password) {
+          dispatch(setLoggedUser(email));
+          navigate(isAdmin ? '/applications' : '/apply');
+          return;
+        }
+        setInvalidPassword(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   return (
@@ -32,6 +55,8 @@ const Login = () => {
               id="userType"
               name="user"
               className="form-check-input"
+              checked={isAdmin}
+              onChange={() => setIsAdmin(!isAdmin)}
             />
             <label className="form-check-label ps-2">Admin</label>
           </div>
@@ -46,6 +71,8 @@ const Login = () => {
           placeholder="your email"
           className="form-control mt-2"
           required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
@@ -54,11 +81,14 @@ const Login = () => {
           placeholder="password"
           className="form-control mt-2"
           required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <p className="text-danger" id="errorMessage">
-          Display error message here
+          {userNotExist && "Email not registered"}
+          {invalidPassword && "Password is incorrect"}
         </p>
-        <button className="btn btn-primary" id="loginButton">
+        <button className="btn btn-primary" id="loginButton" onClick={(e) => handleSubmit(e)}>
           Login
         </button>
         <div className="form-group pt-3">
