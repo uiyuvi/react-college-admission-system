@@ -9,7 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
-    "chromedriver": "^107.0.0",
+    "chromedriver": "^121.0.0",
     "json-server": "^0.17.3",
     "nightwatch": "^2.6.21",
     "react": "^18.2.0",
@@ -26,8 +26,8 @@
   "scripts": {
     "start": "cross-env PORT=8000 react-scripts start",
     "build": "react-scripts build",
-    "pretest": "cp db/testDB.json db/db.json",
-    "test": "nightwatch --headless",
+    "pretest": "shx cp db/testDB.json db/db.json",
+    "test": "nightwatch --headless --test test\\App.test.js --testcase Testing-Signin-Page-for-Applicant",
     "eject": "react-scripts eject",
     "json-server": "json-server --watch db/db.json -p 8001",
     "test2e": "start-server-and-test http://localhost:8000 test"
@@ -51,6 +51,7 @@
     ]
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "shx": "^0.3.4"
   }
 }
