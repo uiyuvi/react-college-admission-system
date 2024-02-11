@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
+import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +13,7 @@ const Signup = () => {
   const [markPercentage, setMarkPercentage] = useState("");
   // const [mandatoryFieldsNotFilled, setMandatoryFieldsNotFilled] = useState(false)
   // const [passwordsNotMatched, setPasswordsNotMatched] = useState(false)
+
 
   /*To add new user
       Use url-  /api/applicants with POST method 
@@ -41,6 +42,43 @@ const Signup = () => {
     }
     return password !== confirmPassword;
   }, [mandatoryFieldsNotFilled, password, confirmPassword])
+
+
+  const signup = () => {
+    if (mandatoryFieldsNotFilled || passwordsNotMatched) {
+      return;
+    }
+    axios.get('/api/applicants?email=' + email)
+      .then(function (response) {
+        console.log(response);
+        if (response.length !== 0) {
+          alert("sorry entered email is already registered")
+          return;
+        }
+        axios.post('/api/applicants', {
+          id: new Date().getTime(),
+          email,
+          password,
+          name,
+          age,
+          mobile,
+          address,
+          markPercentage,
+        })
+          .then(function (response) {
+            console.log(response);
+            alert("successfully created!")
+          })
+          .catch(function (error) {
+            console.log(error);
+            alert("sorry pleasee try again after sometime!")
+          });
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert("sorry entered email is already registered")
+      });
+  }
 
   return (
     <div>
@@ -131,7 +169,7 @@ const Signup = () => {
           {mandatoryFieldsNotFilled && "Please fill all the input fields"}
           {passwordsNotMatched && "Confirm Password does not match"}
         </p>
-        <button className="btn btn-primary" id="submitButton" onClick={(e) => e.preventDefault()}>
+        <button className="btn btn-primary" id="submitButton" onClick={(e) => { e.preventDefault(); signup() }}>
           SIGN UP
         </button>
         <div className="form-group pt-3">
