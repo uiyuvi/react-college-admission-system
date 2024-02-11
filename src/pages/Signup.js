@@ -51,8 +51,8 @@ const Signup = () => {
     axios.get('/api/applicants?email=' + email)
       .then(function (response) {
         console.log(response);
-        if (response.length !== 0) {
-          alert("sorry entered email is already registered")
+        if (response.data.length !== 0) {
+          console.log("sorry entered email is already registered")
           return;
         }
         axios.post('/api/applicants', {
@@ -67,16 +67,16 @@ const Signup = () => {
         })
           .then(function (response) {
             console.log(response);
-            alert("successfully created!")
+            console.log("successfully created!")
           })
           .catch(function (error) {
             console.log(error);
-            alert("sorry pleasee try again after sometime!")
+            console.log("sorry please try again after sometime!")
           });
       })
       .catch(function (error) {
         console.log(error);
-        alert("sorry entered email is already registered")
+        console.log("sorry entered email is already registered")
       });
   }
 
