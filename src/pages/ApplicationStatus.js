@@ -7,31 +7,41 @@ import { getApplicationStatus } from "../app/slice";
 function ApplicationStatus() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { app } = useSelector((state) => state);
+  const { applicationsStatus: applications, loggedUser } = app;
 
+  useEffect(() => {
+    dispatch(getApplicationStatus(loggedUser.email))
+  }, [])
   return (
     <div className="container">
       <h3>Your Applications</h3>
       {/* If user haven't applied for any course*/}
-      <p>You have not applied for any course.</p>
+      {applications.length === 0 &&
+        <p>You have not applied for any course.</p>}
       {/* If any application is available, display data in table*/}
-      <table className="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">Application Id</th>
-            <th scope="col">Course Id</th>
-            <th scope="col">Course Name</th>
-            <th scope="col">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr key={"unique-key"}>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+      {applications.length !== 0 &&
+        <table className="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Application Id</th>
+              <th scope="col">Course Id</th>
+              <th scope="col">Course Name</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {applications.map((application) => (
+              <tr key={application.id}>
+                <td>{application.id}</td>
+                <td>{application.courseId}</td>
+                <td>{application.courseName}</td>
+                <td>{application.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      }
     </div>
   );
 }

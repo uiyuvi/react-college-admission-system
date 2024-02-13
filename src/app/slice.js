@@ -4,7 +4,8 @@ import axios from "axios";
 export const getApplications = createAsyncThunk("getApplications", async () => {
   /* Get applications of all user  
      Use url-  /api/applications with GET method */
-
+  const response = await axios.get(`/api/applications`);
+  return response.data;
 });
 
 export const modifyApplicationStatus = createAsyncThunk(
@@ -42,6 +43,8 @@ export const getApplicationStatus = createAsyncThunk(
 
 const initialState = {
   courses: [],
+  applicationsForAdmin: [],
+  applicationsStatus: [],
   loggedUser: {
     name: "",
     isAdmin: false,
@@ -61,11 +64,11 @@ export const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getApplications.fulfilled, (state, action) => {
-
+      state.applicationsForAdmin.push(...action.payload)
     });
 
     builder.addCase(getApplicationStatus.fulfilled, (state, action) => {
-
+      state.applicationsStatus.push(...action.payload)
     });
 
     builder.addCase(getCourses.fulfilled, (state, action) => {
