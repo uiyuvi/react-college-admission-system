@@ -34,7 +34,7 @@ const Login = () => {
         }
         if (password === response.data[0].password) {
           dispatch(setLoggedUser({
-            name: response.data[0].name,
+            ...response.data[0],
             isAdmin
           }));
           navigate(isAdmin ? '/applications' : '/apply');

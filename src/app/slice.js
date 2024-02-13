@@ -19,7 +19,8 @@ export const modifyApplicationStatus = createAsyncThunk(
 export const getCourses = createAsyncThunk("getCourses", async () => {
   /* Get all courses offered 
     Use url-  /api/courses with GET method */
-
+  const response = await axios.get(`/api/courses`);
+  return response.data;
 });
 
 export const addSeats = createAsyncThunk("addSeats", async (args) => {
@@ -34,6 +35,8 @@ export const getApplicationStatus = createAsyncThunk(
   async (args) => {
     /* Get applications of logged user  
      Use url-  /api/applications?applicantEmail=${email} with GET method */
+    const response = await axios.get(`/api/applications?applicantEmail=${args}`);
+    return response.data;
   }
 );
 
@@ -66,7 +69,7 @@ export const slice = createSlice({
     });
 
     builder.addCase(getCourses.fulfilled, (state, action) => {
-
+      state.courses.push(...action.payload)
     });
   }
 });

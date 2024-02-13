@@ -10,8 +10,15 @@ import axios from "axios";
 function ApplyCourse() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { app } = useSelector((state) => state);
+  const { courses, loggedUser } = app;
 
-  const applyCourse = async () => {
+  useEffect(() => {
+    dispatch(getCourses());
+  }, [])
+
+
+  const applyCourse = async (courseId, courseName) => {
     /*
     To submit user application 
     Use url-  /api/applications with POST method 
@@ -27,6 +34,30 @@ function ApplyCourse() {
       };
       
       On success display the alert - 'Your application submitted successfully' */
+
+    const retrievedApplications = await dispatch(getApplicationStatus(loggedUser.email));
+    console.log(retrievedApplications);
+    const isCourseAlreadyApplied = retrievedApplications.payload.filter((application) => application.courseId === courseId).length !== 0;
+    if (isCourseAlreadyApplied) {
+      return;
+    }
+    const response = await axios.post(`/api/applications`, JSON.stringify({
+      id: new Date().getTime(),
+      applicantEmail: loggedUser.email,
+      applicantName: loggedUser.name,
+      courseId,
+      courseName,
+      status: "Pending",
+      markPercentage: loggedUser.markPercentage,
+    }),
+      {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+    if (response.status === 201) {
+      alert('Your application submitted successfully');
+    }
+
   };
 
   return (
@@ -41,14 +72,19 @@ function ApplyCourse() {
           </tr>
         </thead>
         <tbody>
-          <tr key={"unique-key"}>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <button className="btn btn-outline-success mx-1">Apply</button>
-            </td>
-          </tr>
+          {
+            courses.map((course) => (
+              <tr key={course.id}>
+                <td>{course.courseId}</td>
+                <td>{course.courseName}</td>
+                <td>{course.availableSeats}</td>
+                <td>
+                  {course.availableSeats !== 0 && <button className="btn btn-outline-success mx-1" onClick={() => applyCourse(course.courseId, course.courseName)}>Apply</button>}
+                </td>
+              </tr>
+            ))
+          }
+
         </tbody>
       </table>
     </div>
