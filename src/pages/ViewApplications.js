@@ -10,12 +10,15 @@ import { useNavigate } from "react-router-dom";
 function ViewApplications() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { app } = useSelector((state) => state);
+  const { applicationsForAdmin: applications, loggedUser } = app;
   /* To Approve/ Reject an application dispatch 'modifyApplicationStatus'
      To get all user applications dispatch 'getApplications'
      To get all course details dispatch 'getCourses' to know seat availability
   */
-
+  useEffect(() => {
+    dispatch(getApplications());
+  },[])
   return (
     <div className="container mt-3">
       <h4 className="text-primary">New Applications</h4>
@@ -33,18 +36,22 @@ function ViewApplications() {
           </tr>
         </thead>
         <tbody>
-          <tr key={"unique-key"}>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>
-              <button className="btn btn-success mx-1">Approve</button>
-              <button className="btn btn-danger mx-1">Reject</button>
-            </td>
-          </tr>
+          {applications.map((application) => (
+            <tr key={application.id}>
+              <td>{application.id}</td>
+              <td>{application.courseId}</td>
+              <td>{application.courseName}</td>
+              <td>{application.applicantName}</td>
+              <td>{application.applicantEmail}</td>
+              <td>{application.markPercentage}</td>
+              <td>
+                <button className="btn btn-success mx-1">Approve</button>
+                <button className="btn btn-danger mx-1">Reject</button>
+              </td>
+            </tr>
+
+          ))}
+
         </tbody>
       </table>
       <hr></hr>
