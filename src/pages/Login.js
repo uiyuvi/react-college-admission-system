@@ -33,7 +33,10 @@ const Login = () => {
           return;
         }
         if (password === response.data[0].password) {
-          dispatch(setLoggedUser(email));
+          dispatch(setLoggedUser({
+            name: response.data[0].name,
+            isAdmin
+          }));
           navigate(isAdmin ? '/applications' : '/apply');
           return;
         }
