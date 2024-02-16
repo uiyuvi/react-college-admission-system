@@ -14,7 +14,8 @@ export const modifyApplicationStatus = createAsyncThunk(
     /* To modify the status of Application  
        Use url-  /api/applications/${id} with PATCH method 
        Req body - { status: <newStatus> },  newstatus can be Approved/Rejected*/
-
+    const response = await axios.patch(`/api/applications/${args.id}`, { status: args.status });
+    return response.data;
   });
 
 export const getCourses = createAsyncThunk("getCourses", async () => {
@@ -24,11 +25,13 @@ export const getCourses = createAsyncThunk("getCourses", async () => {
   return response.data;
 });
 
+
 export const addSeats = createAsyncThunk("addSeats", async (args) => {
   /* To modify seatCount of Course 
     Use url-  /api/courses/${id} with PATCH method 
     Req body - { availableSeats: <updatedSeatCount> } */
-
+  const response = await axios.patch(`/api/courses/${args.id}`, { availableSeats: args.availableSeats });
+  return response.data;
 });
 
 export const getApplicationStatus = createAsyncThunk(
@@ -64,15 +67,15 @@ export const slice = createSlice({
 
   extraReducers: (builder) => {
     builder.addCase(getApplications.fulfilled, (state, action) => {
-      state.applicationsForAdmin.push(...action.payload)
+      state.applicationsForAdmin = [...action.payload]
     });
 
     builder.addCase(getApplicationStatus.fulfilled, (state, action) => {
-      state.applicationsStatus.push(...action.payload)
+      state.applicationsStatus = [...action.payload]
     });
 
     builder.addCase(getCourses.fulfilled, (state, action) => {
-      state.courses.push(...action.payload)
+      state.courses = [...action.payload]
     });
   }
 });

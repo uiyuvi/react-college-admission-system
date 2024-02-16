@@ -44,7 +44,7 @@ const Navbar = () => {
               User: {name}
             </li>
             <li className="nav-item">
-              <button className="btn btn-danger">Logout</button>
+              <button className="btn btn-danger" onClick={() => navigate("/")}>Logout</button>
             </li>
           </ul>
         }
